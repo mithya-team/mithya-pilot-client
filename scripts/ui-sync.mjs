@@ -1,15 +1,11 @@
 #!/usr/bin/env node
-import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename, dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ITEMS = ["button", "input"];
-
-function sha256(content) {
-  return createHash("sha256").update(content, "utf8").digest("hex");
-}
+const DEFAULT_ITEMS = ["button", "input"];
 
 function loadComponents(appDir) {
   const path = join(appDir, "components.json");
@@ -17,91 +13,43 @@ function loadComponents(appDir) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
-function pinFromUrl(url) {
-  const match = url.match(/\/(v\d+\.\d+\.\d+)\//);
-  return match ? match[1] : "v0.1.0";
+function registryKey(componentsJson) {
+  if (componentsJson?.registries?.["@mithya-native"]) return "@mithya-native";
+  if (componentsJson?.registries?.["@mithya-web"]) return "@mithya-web";
+  const keys = Object.keys(componentsJson?.registries ?? {});
+  if (keys.length === 0) throw new Error("no registries in components.json");
+  return keys[0];
 }
 
-function registryUrl(componentsJson, key) {
-  const entry = componentsJson?.registries?.[key];
-  if (!entry?.url) {
-    throw new Error(`missing registries.${key}.url`);
+function appDirs() {
+  const cwd = process.cwd();
+  if (existsSync(join(cwd, "components.json"))) return [cwd];
+  return readdirSync(join(root, "apps"))
+    .map((name) => join(root, "apps", name))
+    .filter((dir) => existsSync(join(dir, "components.json")));
+}
+
+function shadcnAdd(appDir, names) {
+  console.log(`shadcn add ${names.join(" ")}  (${appDir})`);
+  const result = spawnSync(
+    "pnpm",
+    ["dlx", "shadcn@latest", "add", ...names, "--yes", "--overwrite"],
+    { cwd: appDir, stdio: "inherit", env: process.env },
+  );
+  if (result.status !== 0) {
+    throw new Error(`shadcn add failed in ${appDir} (exit ${result.status})`);
   }
-  return entry.url;
 }
 
-function fileTarget(file, itemName) {
-  if (file.target) return file.target.replace(/^\//, "");
-  const name = basename(file.path ?? `${itemName}.tsx`);
-  return `src/components/ui/${name}`;
-}
+const items = process.argv.slice(2);
+const names = items.length > 0 ? items : DEFAULT_ITEMS;
 
-async function fetchItem(urlTemplate, name) {
-  const url = urlTemplate.replace("{name}", name);
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`${url} → ${res.status} ${res.statusText}`);
-  }
-  return res.json();
-}
-
-async function syncApp(appDir, registryKey) {
+for (const appDir of appDirs()) {
   const componentsJson = loadComponents(appDir);
-  if (!componentsJson) return null;
-
-  const urlTemplate = registryUrl(componentsJson, registryKey);
-  const version = pinFromUrl(urlTemplate);
-  const lock = { version, items: {} };
-
-  for (const name of ITEMS) {
-    const item = await fetchItem(urlTemplate, name);
-    const files = {};
-    const itemFiles = item.files ?? [];
-    if (itemFiles.length === 0) {
-      throw new Error(`${registryKey}/${name}: no files[]`);
-    }
-    for (const file of itemFiles) {
-      if (typeof file.content !== "string") {
-        throw new Error(`${registryKey}/${name}: file missing content`);
-      }
-      const target = fileTarget(file, name);
-      const abs = join(appDir, target);
-      mkdirSync(dirname(abs), { recursive: true });
-      writeFileSync(abs, file.content);
-      files[target] = sha256(file.content);
-    }
-    lock.items[name] = {
-      version: item.version ?? version,
-      files,
-    };
-  }
-
-  const lockPath = join(appDir, "ui.lock.json");
-  writeFileSync(lockPath, `${JSON.stringify(lock, null, 2)}\n`);
-  console.log(`wrote ${lockPath}`);
-  return version;
+  if (!componentsJson) continue;
+  const key = registryKey(componentsJson);
+  const prefixed = names.map((name) =>
+    name.startsWith("@") ? name : `${key}/${name}`,
+  );
+  shadcnAdd(appDir, prefixed);
 }
-
-async function main() {
-  const webVersion = await syncApp(join(root, "apps/web"), "@mithya-web");
-  if (!webVersion) {
-    throw new Error("web sync failed: no apps/web/components.json");
-  }
-
-  if (existsSync(join(root, "apps/native/components.json"))) {
-    try {
-      await syncApp(join(root, "apps/native"), "@mithya-native");
-    } catch (err) {
-      console.error(`native sync skipped: ${err.message}`);
-    }
-  }
-
-  console.log("");
-  console.log("UI-Reason: first-install");
-  console.log(`UI-Version: ${webVersion}`);
-}
-
-main().catch((err) => {
-  console.error(err.message);
-  process.exit(1);
-});

@@ -6,8 +6,9 @@
     "preinstall": "node -e \"if (!/pnpm/.test(process.env.npm_execpath || '')) { console.error('Use pnpm. npm i breaks Unistyles (bob not found).'); process.exit(1) }\"",
     "ui:init": "node scripts/ui-init.mjs",
     "ui:sync": "node scripts/ui-sync.mjs",
-    "check:ui": "./scripts/check-ui-lock.sh",
-    "verify:ui": "node scripts/verify-ui-lock.mjs"
+    "test:shadcn": "node scripts/test-shadcn-add.mjs",
+    "typecheck": "pnpm --filter web typecheck && pnpm --filter native typecheck",
+    "check:ui": "./scripts/check-ui-lock.sh"
   },
   "engines": {
     "node": ">=20"

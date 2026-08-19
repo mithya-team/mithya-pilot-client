@@ -11,29 +11,21 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 0
 fi
 
-files="$(git diff --cached --name-only -- \
+ui_files="$(git diff --cached --name-only -- \
   'apps/*/src/components/ui/*' \
   'apps/*/src/components/ui/**' \
   '**/src/components/ui/*' \
-  '**/src/components/ui/**' \
-  '**/ui.lock.json' || true)"
+  '**/src/components/ui/**' || true)"
 
-if [ -z "${files}" ]; then
+if [ -z "${ui_files}" ]; then
   exit 0
 fi
 
-MSG="$(cat "$MSG_FILE")"
+other_files="$(git diff --cached --name-only | grep -v -E 'src/components/ui/|components\.json$' || true)"
 
-if ! printf '%s\n' "$MSG" | grep -Eq 'UI-Reason: (first-install|refresh)'; then
-  echo "blocked: UI commit needs UI-Reason: first-install or UI-Reason: refresh"
-  echo "touched:"
-  echo "$files"
-  exit 1
-fi
-
-if ! printf '%s\n' "$MSG" | grep -q 'UI-Version:'; then
-  echo "blocked: UI commit needs UI-Version:"
-  echo "touched:"
-  echo "$files"
+if [ -n "${other_files}" ]; then
+  echo "blocked: UI commit may include src/components/ui and components.json only"
+  echo "other staged:"
+  echo "$other_files"
   exit 1
 fi

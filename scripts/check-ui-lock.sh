@@ -8,7 +8,11 @@ fi
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
-ui_files="$(git diff --cached --name-only -- 'apps/*/src/components/ui/*' 'apps/*/src/components/ui/**' '**/src/components/ui/*' '**/src/components/ui/**' '**/ui.lock.json' || true)"
+ui_files="$(git diff --cached --name-only -- \
+  'apps/*/src/components/ui/*' \
+  'apps/*/src/components/ui/**' \
+  '**/src/components/ui/*' \
+  '**/src/components/ui/**' || true)"
 
 if [ -z "${ui_files}" ]; then
   exit 0
@@ -21,5 +25,3 @@ if [ "${UI_SYNC:-}" != "1" ]; then
   echo "$ui_files"
   exit 1
 fi
-
-node "$ROOT/scripts/verify-ui-lock.mjs"
