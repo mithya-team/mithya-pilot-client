@@ -1,6 +1,6 @@
 # mithya-pilot-client
 
-Pilot **client** app repo: web + React Native. Theme and product UI live here. Generic primitives come from `mithya-ui-libs` via `pnpm ui:sync`.
+Pilot **client** app repo: web + React Native (`solid` / `ghost`). Second client is https://github.com/aniruddha-mithya/mithya-alt-client.
 
 Use **pnpm**. `npm i` fails Unistyles (`bob: command not found`).
 
@@ -14,6 +14,8 @@ Registry first (`mithya-ui-libs` `pnpm serve` on `127.0.0.1:3333`).
 pnpm install
 pnpm ui:init
 pnpm ui:sync
+pnpm test:shadcn
+pnpm typecheck
 pnpm --filter web dev
 pnpm --filter web test:e2e
 pnpm --filter native ios
@@ -31,10 +33,16 @@ git config core.hooksPath .githooks
 
 | Path | Owner |
 |---|---|
-| `apps/*/src/components/ui` | registry copy, locked |
-| `apps/*/ui.lock.json` | hashes |
+| `apps/*/src/components/ui` | registry copy via `pnpm ui:sync` (`shadcn add`), locked |
 | `apps/web/src/theme` | client theme values |
+| `apps/web/src/theme/variants` | CVA recipes |
 | `apps/native/src/theme` | Unistyles values + `StyleSheet.configure` |
+| `apps/native/src/theme/variants` | Unistyles variant recipes |
 | `apps/*/src/components/product` | client designer |
+| `apps/*/src/design-sandbox` | typed mock data + designer preview |
 
-Do not edit `src/components/ui`. UI commits need `UI-Reason: first-install|refresh` and `UI-Version:`.
+Do not edit `src/components/ui`. Pin is the registry URL in `components.json`. UI commits need `UI_SYNC=1`.
+
+Designer workflow: read `docs/designer-sandbox.md`. Product UI is reviewed in
+the sandbox with local mock data. Developers replace that data at the feature
+boundary and add real data and business logic outside the sandbox.
