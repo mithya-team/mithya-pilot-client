@@ -2,6 +2,8 @@
 
 Pilot client. pnpm only. Do not run `npm i`.
 
+Parent Cursor workspace: `mithya-design-dev-workflow` (sibling `mithya-ui-libs`).
+
 - Product / theme / ui:sync: `.cursor/skills/client-ui-component/SKILL.md`
 - Contract: https://github.com/mithya-team/mithya-ui-libs/blob/main/docs/working-model.md
 - Do not edit `apps/*/src/components/ui/**`.
