@@ -1,0 +1,4 @@
+#!/bin/sh
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+exec "$ROOT/scripts/check-ui-lock.sh"

@@ -1,0 +1,14 @@
+{
+  "name": "mithya-pilot-client",
+  "private": true,
+  "packageManager": "pnpm@11.1.3",
+  "scripts": {
+    "ui:init": "node scripts/ui-init.mjs",
+    "ui:sync": "node scripts/ui-sync.mjs",
+    "check:ui": "./scripts/check-ui-lock.sh",
+    "verify:ui": "node scripts/verify-ui-lock.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
