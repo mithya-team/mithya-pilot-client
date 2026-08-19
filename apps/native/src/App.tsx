@@ -10,10 +10,14 @@ export default function App() {
   const [name, setName] = useState("");
 
   return (
-    <View style={styles.screen}>
+    <View style={styles.screen} testID="pilot-screen">
       <ClientBanner />
-      <Input value={name} onChangeText={setName} placeholder="Name" />
-      <Button>Save</Button>
+      <View testID="name-input">
+        <Input value={name} onChangeText={setName} placeholder="Name" />
+      </View>
+      <View testID="save-button">
+        <Button>Save</Button>
+      </View>
       <StatusBar style="auto" />
     </View>
   );

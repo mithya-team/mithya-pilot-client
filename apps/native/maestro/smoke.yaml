@@ -1,0 +1,21 @@
+appId: team.mithya.pilot
+---
+- launchApp
+- tapOn:
+    text: Continue
+    optional: true
+- tapOn:
+    text: Close
+    optional: true
+- extendedWaitUntil:
+    visible: "Mithya pilot client"
+    timeout: 15000
+- assertVisible:
+    id: "name-input"
+- assertVisible:
+    id: "save-button"
+- tapOn:
+    id: "name-input"
+- inputText: "Ada"
+- tapOn:
+    id: "save-button"

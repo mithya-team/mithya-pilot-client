@@ -2,6 +2,10 @@
 
 Pilot **client** app repo: web + React Native. Theme and product UI live here. Generic primitives come from `mithya-ui-libs` via `pnpm ui:sync`.
 
+Use **pnpm**. `npm i` fails Unistyles (`bob: command not found`).
+
+Contract: see `mithya-ui-libs/docs/working-model.md`. Agent process: `.cursor/skills/client-ui-component/SKILL.md`.
+
 ## Setup
 
 Registry first (`mithya-ui-libs` `pnpm serve` on `127.0.0.1:3333`).
@@ -11,10 +15,13 @@ pnpm install
 pnpm ui:init
 pnpm ui:sync
 pnpm --filter web dev
-pnpm --filter native typecheck
+pnpm --filter web test:e2e
+pnpm --filter native ios
 ```
 
-Native Unistyles needs a **dev client / prebuild**. Expo Go is not supported.
+Native Unistyles needs a **dev client / prebuild**. Expo Go is not supported. Maestro: `maestro test apps/native/maestro/smoke.yaml` after the iOS app is installed.
+
+Clone this repo to a path **without spaces**. Expo iOS scripts fail if a parent folder name contains a space.
 
 ```bash
 git config core.hooksPath .githooks

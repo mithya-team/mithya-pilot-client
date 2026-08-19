@@ -1,14 +1,18 @@
 {
   "expo": {
-    "name": "native",
-    "slug": "native",
+    "name": "MithyaPilot",
+    "slug": "mithya-pilot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "plugins": [
+      "expo-dev-client"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "team.mithya.pilot"
     },
     "android": {
       "adaptiveIcon": {

@@ -7,3 +7,7 @@ dist
 coverage
 android
 ios
+playwright-report
+test-results
+blob-report
+
