@@ -1,5 +1,14 @@
-/** Semantic shape from mithya-ui-libs/token-contract.json (`native` keys). */
+/** Client theme. Hex lives in `primitive` only. */
+
 export type NativeTheme = {
+  primitive: {
+    white: string;
+    gray50: string;
+    gray200: string;
+    gray500: string;
+    gray900: string;
+    blue600: string;
+  };
   colors: {
     bg: {
       surface: string;
@@ -37,6 +46,31 @@ export type NativeTheme = {
   opacity: {
     disabled: number;
   };
+  component: {
+    button: {
+      solidBg: string;
+      solidFg: string;
+      ghostBg: string;
+      ghostFg: string;
+    };
+    input: {
+      bg: string;
+      fg: string;
+      border: string;
+    };
+  };
+};
+
+type PrimitiveKey = keyof NativeTheme["primitive"];
+
+type SemanticMap = {
+  bg: { surface: PrimitiveKey; accent: PrimitiveKey; muted: PrimitiveKey };
+  fg: {
+    default: PrimitiveKey;
+    muted: PrimitiveKey;
+    onAccent: PrimitiveKey;
+  };
+  border: { default: PrimitiveKey; focus: PrimitiveKey };
 };
 
 const controlSpace: NativeTheme["space"]["control"] = {
@@ -52,48 +86,82 @@ const label: NativeTheme["typography"]["label"] = {
   letterSpacing: 0,
 };
 
-export const lightTheme: NativeTheme = {
-  colors: {
+function makeTheme(
+  primitive: NativeTheme["primitive"],
+  semantic: SemanticMap,
+): NativeTheme {
+  const colors: NativeTheme["colors"] = {
     bg: {
-      surface: "#ffffff",
-      accent: "#2563eb",
-      muted: "#f4f4f5",
+      surface: primitive[semantic.bg.surface],
+      accent: primitive[semantic.bg.accent],
+      muted: primitive[semantic.bg.muted],
     },
     fg: {
-      default: "#18181b",
-      muted: "#71717a",
-      onAccent: "#ffffff",
+      default: primitive[semantic.fg.default],
+      muted: primitive[semantic.fg.muted],
+      onAccent: primitive[semantic.fg.onAccent],
     },
     border: {
-      default: "#e4e4e7",
-      focus: "#2563eb",
+      default: primitive[semantic.border.default],
+      focus: primitive[semantic.border.focus],
     },
-  },
-  space: { control: controlSpace },
-  radius: { control: 8 },
-  typography: { label },
-  opacity: { disabled: 0.5 },
+  };
+
+  return {
+    primitive,
+    colors,
+    space: { control: controlSpace },
+    radius: { control: 8 },
+    typography: { label },
+    opacity: { disabled: 0.5 },
+    component: {
+      button: {
+        solidBg: colors.bg.accent,
+        solidFg: colors.fg.onAccent,
+        ghostBg: "transparent",
+        ghostFg: colors.fg.default,
+      },
+      input: {
+        bg: colors.bg.surface,
+        fg: colors.fg.default,
+        border: colors.border.default,
+      },
+    },
+  };
+}
+
+const lightSemantic: SemanticMap = {
+  bg: { surface: "white", accent: "blue600", muted: "gray50" },
+  fg: { default: "gray900", muted: "gray500", onAccent: "white" },
+  border: { default: "gray200", focus: "blue600" },
 };
 
-export const darkTheme: NativeTheme = {
-  colors: {
-    bg: {
-      surface: "#18181b",
-      accent: "#2563eb",
-      muted: "#27272a",
-    },
-    fg: {
-      default: "#fafafa",
-      muted: "#a1a1aa",
-      onAccent: "#ffffff",
-    },
-    border: {
-      default: "#3f3f46",
-      focus: "#60a5fa",
-    },
-  },
-  space: { control: controlSpace },
-  radius: { control: 8 },
-  typography: { label },
-  opacity: { disabled: 0.5 },
+const darkSemantic: SemanticMap = {
+  bg: { surface: "gray900", accent: "blue600", muted: "gray50" },
+  fg: { default: "white", muted: "gray500", onAccent: "white" },
+  border: { default: "gray200", focus: "blue600" },
 };
+
+export const lightTheme = makeTheme(
+  {
+    white: "#ffffff",
+    gray50: "#f4f4f5",
+    gray200: "#e4e4e7",
+    gray500: "#71717a",
+    gray900: "#18181b",
+    blue600: "#2563eb",
+  },
+  lightSemantic,
+);
+
+export const darkTheme = makeTheme(
+  {
+    white: "#fafafa",
+    gray50: "#27272a",
+    gray200: "#3f3f46",
+    gray500: "#a1a1aa",
+    gray900: "#18181b",
+    blue600: "#2563eb",
+  },
+  darkSemantic,
+);

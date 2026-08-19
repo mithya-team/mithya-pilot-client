@@ -11,6 +11,12 @@ appId: team.mithya.pilot
     visible: "Mithya pilot client"
     timeout: 15000
 - assertVisible:
+    text: "Mock client: Ada Lovelace"
+- assertVisible:
+    id: "variant-solid"
+- assertVisible:
+    id: "variant-ghost"
+- assertVisible:
     id: "name-input"
 - assertVisible:
     id: "save-button"
@@ -18,4 +24,11 @@ appId: team.mithya.pilot
     id: "name-input"
 - inputText: "Ada"
 - tapOn:
+    text: "Button variants"
+- tapOn:
     id: "save-button"
+- scrollUntilVisible:
+    element:
+      text: "Saved: Ada"
+    direction: DOWN
+    timeout: 5000
