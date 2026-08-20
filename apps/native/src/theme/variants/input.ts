@@ -1,4 +1,4 @@
-import { StyleSheet, type UnistylesVariants } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 export const inputStyles = StyleSheet.create((theme) => ({
   root: {
@@ -19,9 +19,3 @@ export const inputStyles = StyleSheet.create((theme) => ({
     },
   },
 }));
-
-export function useInputVariants(
-  variants: UnistylesVariants<typeof inputStyles>,
-) {
-  inputStyles.useVariants(variants);
-}

@@ -45,7 +45,7 @@ mock scenarios. They must not edit the locked UI copies.
 3. Theme values in `src/theme` at three levels: primitive, semantic, component.
 4. Recipes in `src/theme/variants/<name>` may use any of those levels.
    - Web: CVA (`class-variance-authority`) exported as `<name>Variants`
-   - Native: Unistyles stylesheet exported as `<name>Styles` with `use<Name>Variants` next to `StyleSheet.create`
+   - Native: Unistyles stylesheet exported as `<name>Styles`. Do not wrap `useVariants`. The locked primitive calls `<name>Styles.useVariants()` in the same function as `style=`.
 5. Keep data and save/load behavior behind typed props or callbacks.
 6. For Playwright: `getByRole` / `getByPlaceholder`. For Maestro: `testID` wrappers in page/product code.
 

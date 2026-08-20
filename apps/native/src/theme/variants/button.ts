@@ -1,4 +1,4 @@
-import { StyleSheet, type UnistylesVariants } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 export const buttonStyles = StyleSheet.create((theme) => ({
   root: {
@@ -58,9 +58,3 @@ export const buttonStyles = StyleSheet.create((theme) => ({
     },
   },
 }));
-
-export function useButtonVariants(
-  variants: UnistylesVariants<typeof buttonStyles>,
-) {
-  buttonStyles.useVariants(variants);
-}
