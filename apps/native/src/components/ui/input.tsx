@@ -1,7 +1,7 @@
 import * as React from "react"
 import { TextInput } from "react-native"
 import type { UnistylesVariants } from "react-native-unistyles"
-import { inputStyles, useInputVariants } from "../../theme/variants/input"
+import { inputStyles } from "../../theme/variants/input"
 import { layoutToStyle, type LayoutProps } from "./layout"
 
 export type InputProps = {
@@ -20,7 +20,8 @@ export function Input({
   layout,
   onChangeText,
 }: InputProps) {
-  useInputVariants({
+  // Babel scopes this stylesheet for the rest of the function. Do not wrap in another file.
+  inputStyles.useVariants({
     disabled,
   })
 

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Pressable, Text, type GestureResponderEvent } from "react-native"
 import type { UnistylesVariants } from "react-native-unistyles"
-import { buttonStyles, useButtonVariants } from "../../theme/variants/button"
+import { buttonStyles } from "../../theme/variants/button"
 import { layoutToStyle, type LayoutProps } from "./layout"
 
 export type ButtonProps = {
@@ -18,7 +18,8 @@ export function Button({
   layout,
   onPress,
 }: ButtonProps) {
-  useButtonVariants({
+  // Babel scopes this stylesheet for the rest of the function. Do not wrap in another file.
+  buttonStyles.useVariants({
     variant,
     size,
     disabled,
