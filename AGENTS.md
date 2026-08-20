@@ -11,7 +11,9 @@ Parent Cursor workspace: `mithya-design-dev-workflow` (siblings `mithya-ui-libs`
 ```bash
 pnpm install
 pnpm ui:sync
+pnpm --filter web storybook
 pnpm --filter web test:e2e
+pnpm --filter native storybook
 pnpm --filter native ios
 ```
 

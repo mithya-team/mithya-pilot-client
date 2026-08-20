@@ -14,6 +14,7 @@ Designers work in the unlocked client paths and use the sandbox entry point:
 | Path | Purpose |
 |---|---|
 | `apps/*/src/design-sandbox/**` | Mock data and designer-owned preview screens |
+| `apps/*/src/stories/**` | Storybook stories (theme, product, sandbox). Not in `ui/`. |
 | `apps/*/src/components/product/**` | Product components and composition |
 | `apps/*/src/theme/**` | Theme values |
 | `apps/*/src/theme/variants/**` | Primitive variant recipes |
@@ -33,6 +34,8 @@ mock scenarios. They must not edit the locked UI copies.
 | `apps/*/src/theme/**` | client designer | Yes |
 | `apps/*/src/theme/variants/**` | client designer | Yes. CVA (web) or Unistyles variants (native). |
 | `apps/*/src/components/product/**` | client designer | Yes |
+| `apps/*/src/design-sandbox/**` | client designer | Yes |
+| `apps/*/src/stories/**` | client designer | Yes. Do not put stories in `ui/`. |
 | Feature / page code | client developer | Yes |
 
 ## Product component (unlocked)
@@ -51,10 +54,11 @@ mock scenarios. They must not edit the locked UI copies.
 1. Add or update the product component.
 2. Add or update CVA / Unistyles recipes in `src/theme/variants`.
 3. Add a typed scenario in `apps/*/src/design-sandbox/mock-data.ts`.
-4. Render the scenario from `DesignerSandbox`.
-5. Test the visible states and the primary interaction.
-6. Run the platform smoke test.
-7. Record the accepted design and open questions in the pull request.
+4. Add or update stories in `apps/*/src/stories` (tokens, variants, product, sandbox).
+5. Review in Storybook: `pnpm --filter web storybook` or `pnpm --filter native storybook`.
+6. Keep `DesignerSandbox` as the app smoke-test surface.
+7. Run the platform smoke test.
+8. Record the accepted design and open questions in the pull request.
 
 Do not add API clients, query hooks, persistence, permissions, or domain
 decisions to the designer sandbox.
@@ -75,8 +79,10 @@ Do not patch `src/components/ui`. Open an issue on `mithya-team/mithya-ui-libs`.
 
 ## Tests
 
-- Web: `pnpm --filter web test:e2e` (Playwright)
-- Native: Maestro `apps/native/maestro/smoke.yaml` on a prebuild dev client (`pnpm --filter native ios`). Not Expo Go.
+- Web Storybook: `pnpm --filter web storybook` (`http://127.0.0.1:6006`)
+- Native Storybook: `pnpm --filter native storybook` (`STORYBOOK_ENABLED=true`). Rebuild the Expo **dev client** after Storybook native deps.
+- Web smoke: `pnpm --filter web test:e2e` (Playwright)
+- Native smoke: Maestro `apps/native/maestro/smoke.yaml` on a prebuild dev client (`pnpm --filter native ios`). Not Expo Go.
 
 The smoke tests start from the designer sandbox and prove that mock data,
 visible states, and the primary interaction work. They do not prove real API

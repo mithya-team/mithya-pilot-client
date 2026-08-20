@@ -11,6 +11,7 @@ Designers may change:
 - `apps/*/src/theme/**`
 - `apps/*/src/theme/variants/**`
 - `apps/*/src/design-sandbox/**`
+- `apps/*/src/stories/**`
 
 Pilot (`web`, `native`): `solid` / `ghost`. Second client is the sibling repo `mithya-alt-client` (`filled` / `outline` / `soft`).
 
@@ -28,8 +29,8 @@ If a product screen needs a change to a locked primitive, open an issue in
 3. Put client theme values in `src/theme`.
 4. Put primitive variant recipes in `src/theme/variants` (CVA on web, Unistyles variants on native).
 5. Add a typed scenario to `src/design-sandbox/mock-data.ts`.
-6. Render it from `src/design-sandbox/DesignerSandbox.tsx`.
-7. Review the web and native screens with all important states.
+6. Add or update stories in `src/stories` (tokens, variants, product, sandbox).
+7. Review in Storybook. Keep `DesignerSandbox` as the app smoke-test surface.
 8. Run the platform smoke test.
 9. Record accepted states, open questions, and test hooks in the pull request.
 
@@ -94,12 +95,28 @@ UI contract. The developer then:
 The designer owns the visual result. The developer owns production behavior and
 data management.
 
+## Storybook
+
+Storybook is the designer review surface for this client's theme and product UI.
+Do not put stories in `src/components/ui`.
+
+```bash
+pnpm --filter web storybook
+pnpm --filter native storybook
+```
+
+Web: `http://127.0.0.1:6006`. Native: `STORYBOOK_ENABLED=true` swaps the Expo entry. Rebuild the **dev client** after Storybook native deps (`pnpm --filter native ios`).
+
+Stories cover token swatches, button/input variants, product components, and the sandbox screen.
+
 ## Verification
 
 From `mithya-pilot-client`:
 
 ```bash
+pnpm --filter web storybook
 pnpm --filter web test:e2e
+pnpm --filter native storybook
 pnpm --filter native ios
 maestro test apps/native/maestro/smoke.yaml
 ```

@@ -17,7 +17,9 @@ pnpm ui:sync
 pnpm test:shadcn
 pnpm typecheck
 pnpm --filter web dev
+pnpm --filter web storybook
 pnpm --filter web test:e2e
+pnpm --filter native storybook
 pnpm --filter native ios
 ```
 
@@ -40,9 +42,8 @@ git config core.hooksPath .githooks
 | `apps/native/src/theme/variants` | Unistyles variant recipes |
 | `apps/*/src/components/product` | client designer |
 | `apps/*/src/design-sandbox` | typed mock data + designer preview |
+| `apps/*/src/stories` | Storybook stories. Not under `ui/`. |
 
 Do not edit `src/components/ui`. Pin is the registry URL in `components.json`. UI commits need `UI_SYNC=1`.
 
-Designer workflow: read `docs/designer-sandbox.md`. Product UI is reviewed in
-the sandbox with local mock data. Developers replace that data at the feature
-boundary and add real data and business logic outside the sandbox.
+Designer workflow: read `docs/designer-sandbox.md`. Review theme and product UI in Storybook. The app sandbox stays the smoke-test surface. Developers replace mock data at the feature boundary.

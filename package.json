@@ -8,6 +8,8 @@
     "ui:sync": "node scripts/ui-sync.mjs",
     "test:shadcn": "node scripts/test-shadcn-add.mjs",
     "typecheck": "pnpm --filter web typecheck && pnpm --filter native typecheck",
+    "storybook:web": "pnpm --filter web storybook",
+    "storybook:native": "pnpm --filter native storybook",
     "check:ui": "./scripts/check-ui-lock.sh"
   },
   "engines": {

@@ -7,3 +7,6 @@ overrides:
 
 neverBuiltDependencies:
   - react-native-unistyles
+
+allowBuilds:
+  esbuild: true

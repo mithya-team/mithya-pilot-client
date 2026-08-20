@@ -10,4 +10,6 @@ ios
 playwright-report
 test-results
 blob-report
+storybook-static
+*storybook.log
 
